@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,6 +26,7 @@
             color: var(--ui-text);
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 15px;
@@ -299,6 +300,19 @@
             from { opacity: 0; transform: translateX(-8px); }
             to { opacity: 1; transform: translateX(0); }
         }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+        }
+
+        footer a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: underline;
+            margin: 0 8px;
+        }
     </style>
 </head>
 <body>
@@ -311,7 +325,7 @@
                 <div class="pill-stat">🐍 <span id="snake-len">3</span></div>
                 <div class="pill-stat">🍎 <span id="apple-count">0</span></div>
                 <div class="pill-stat">⭐ <span id="score">0</span></div>
-                <div class="pill-stat">🎁 <span id="total-gifts">€0.00</span></div>
+                <div class="pill-stat">🎁 <span id="total-gifts">$0.00</span></div>
                 <div class="pill-stat">🏆 <span id="high-score">0</span></div>
             </div>
 
@@ -331,7 +345,7 @@
                 <div id="overlay" class="overlay">
                     <div id="overlay-title" class="game-over-title">GAME OVER</div>
                     <div id="end-stats" class="end-stats"></div>
-                    <button class="btn-restart" onclick="resetGame()">NEUSTART</button>
+                    <button class="btn-restart" onclick="resetGame()">RESTART</button>
                 </div>
             </div>
         </div>
@@ -344,19 +358,19 @@
                 <div class="gift-grid">
                     <button class="btn-gift" data-gift="rose" onclick="handleGift('rose', 0.10)">
                         <span>🌹</span> Rose
-                        <small>+1 Apfel (€0.10)</small>
+                        <small>+1 Apple ($0.10)</small>
                     </button>
                     <button class="btn-gift" data-gift="heart" onclick="handleGift('heart', 1.00)">
                         <span>❤️</span> Heart
-                        <small>+3 Äpfel (€1.00)</small>
+                        <small>+3 Apples ($1.00)</small>
                     </button>
                     <button class="btn-gift" data-gift="lion" onclick="handleGift('lion', 10.00)">
                         <span>🦁</span> Lion
-                        <small>+10 Äpfel (€10.00)</small>
+                        <small>+10 Apples ($10.00)</small>
                     </button>
                     <button class="btn-gift" data-gift="universe" onclick="handleGift('universe', 25.00)">
                         <span>🌌</span> Universe
-                        <small>+25 Äpfel (€25.00)</small>
+                        <small>+25 Apples ($25.00)</small>
                     </button>
                 </div>
             </div>
@@ -368,6 +382,10 @@
             </div>
         </div>
     </div>
+
+    <footer>
+        <a href="#terms">Terms of Service</a> | <a href="#privacy">Privacy Policy</a>
+    </footer>
 
     <script>
         // --- CONSTANTS & SETUP ---
@@ -486,7 +504,7 @@
 
             if (targetSize !== gridSize) {
                 updateGridSize(targetSize);
-                logEvent(`📐 Spielfeld erweitert auf ${gridSize}x${gridSize}!`, "#2ecc71");
+                logEvent(`📐 Playfield expanded to ${gridSize}x${gridSize}!`, "#2ecc71");
             }
         }
 
@@ -760,22 +778,22 @@
             switch (giftName.toLowerCase()) {
                 case 'rose':
                     appleCount = 1;
-                    logText = "🌹 Rose → +1 Apfel";
+                    logText = "🌹 Rose → +1 Apple";
                     color = "#ff4757";
                     break;
                 case 'heart':
                     appleCount = 3;
-                    logText = "❤️ Heart → +3 Äpfel";
+                    logText = "❤️ Heart → +3 Apples";
                     color = "#e84393";
                     break;
                 case 'lion':
                     appleCount = 10;
-                    logText = "🦁 Lion → +10 Äpfel";
+                    logText = "🦁 Lion → +10 Apples";
                     color = "#ffa502";
                     break;
                 case 'universe':
                     appleCount = 25;
-                    logText = "🌌 Universe → +25 Äpfel";
+                    logText = "🌌 Universe → +25 Apples";
                     color = "#9b59b6";
                     break;
             }
@@ -835,7 +853,7 @@
             snakeLenEl.textContent = snake.length;
             appleCountEl.textContent = apples.length;
             scoreEl.textContent = score;
-            totalGiftsEl.textContent = `€${totalGiftValue.toFixed(2)}`;
+            totalGiftsEl.textContent = `$${totalGiftValue.toFixed(2)}`;
         }
 
         function logEvent(text, color) {
@@ -856,7 +874,7 @@
             }, 1800);
         }
 
-        // --- NEW REALISTIC/CARTOON CANVAS DRAWING SYSTEM ---
+        // --- CANVAS DRAWING SYSTEM ---
 
         function draw() {
             drawProceduralNaturalGrass();
@@ -877,7 +895,7 @@
             drawSmoothOrganicSnake(renderSnake, headColor, bodyColor);
         }
 
-        // Procedural Grass Environment with Soft Checkerboard & Subtle Sprigs
+        // Procedural Grass Environment
         function drawProceduralNaturalGrass() {
             for (let r = 0; r < gridSize; r++) {
                 for (let c = 0; c < gridSize; c++) {
@@ -886,7 +904,6 @@
                 }
             }
 
-            // Scatter subtle natural grass details
             ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
             for (let i = 0; i < gridSize; i += 2) {
                 const gx = (i * tileSize + 10) % CANVAS_PIXEL_SIZE;
@@ -897,13 +914,13 @@
             }
         }
 
-        // Fully Rounded Organic Snake Rendering with Dynamic Curved Joints & Facial Details
+        // Snake Rendering
         function drawSmoothOrganicSnake(snakeArray, headColor, bodyColor) {
             if (snakeArray.length === 0) return;
 
             const radius = tileSize / 2;
 
-            // 1. Draw Soft Directional Drop Shadows
+            // 1. Drop Shadows
             ctx.fillStyle = 'rgba(0, 0, 0, 0.18)';
             snakeArray.forEach(seg => {
                 ctx.beginPath();
@@ -911,7 +928,7 @@
                 ctx.fill();
             });
 
-            // 2. Draw Connected Smooth Body Stroke
+            // 2. Connected Body
             ctx.strokeStyle = bodyColor;
             ctx.lineWidth = tileSize * 0.82;
             ctx.lineCap = 'round';
@@ -926,7 +943,7 @@
             });
             ctx.stroke();
 
-            // 3. Draw Inner Highlight on Body
+            // 3. Inner Highlight
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
             ctx.lineWidth = tileSize * 0.25;
             ctx.beginPath();
@@ -938,7 +955,7 @@
             });
             ctx.stroke();
 
-            // 4. Draw Rounded Head & Facial Features
+            // 4. Head & Facial Features
             const head = snakeArray[0];
             const neck = snakeArray[1] || head;
             const hx = head.x * tileSize + radius;
@@ -949,7 +966,6 @@
             ctx.arc(hx, hy, radius * 0.9, 0, Math.PI * 2);
             ctx.fill();
 
-            // Direction calculation
             const dirX = Math.sign(head.x - neck.x) || 1;
             const dirY = Math.sign(head.y - neck.y) || 0;
 
@@ -961,7 +977,7 @@
             if (dirX !== 0) { eyeOffsetX = dirX * radius * 0.35; eyeGapX = 0; }
             if (dirY !== 0) { eyeOffsetY = dirY * radius * 0.35; eyeGapY = 0; }
 
-            // Animated Tongue
+            // Tongue
             const tongueTime = (Date.now() % 600) / 600;
             if (tongueTime > 0.5) {
                 ctx.strokeStyle = '#ff4757';
@@ -974,14 +990,14 @@
                 ctx.stroke();
             }
 
-            // Eyes Background (White)
+            // Eyes
             ctx.fillStyle = '#ffffff';
             ctx.beginPath();
             ctx.arc(hx + eyeOffsetX - eyeGapY, hy + eyeOffsetY - eyeGapX, radius * 0.26, 0, Math.PI * 2);
             ctx.arc(hx + eyeOffsetX + eyeGapY, hy + eyeOffsetY + eyeGapX, radius * 0.26, 0, Math.PI * 2);
             ctx.fill();
 
-            // Pupils (Dark)
+            // Pupils
             ctx.fillStyle = '#1e272e';
             ctx.beginPath();
             ctx.arc(hx + eyeOffsetX - eyeGapY + (dirX * 1.5), hy + eyeOffsetY - eyeGapX + (dirY * 1.5), radius * 0.13, 0, Math.PI * 2);
@@ -989,7 +1005,7 @@
             ctx.fill();
         }
 
-        // Detailed Cartoon Apple Renderer
+        // Apple Renderer
         function drawApplesLayer() {
             apples.forEach(apple => {
                 const cx = apple.x * tileSize + tileSize / 2;
@@ -999,13 +1015,13 @@
 
                 const isGolden = milestones.goldenApples || milestones.superMode || milestones.chaosMode;
 
-                // 1. Soft Shadow
+                // 1. Shadow
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.22)';
                 ctx.beginPath();
                 ctx.ellipse(cx, cy + r * 0.9, r * 0.85, r * 0.35, 0, 0, Math.PI * 2);
                 ctx.fill();
 
-                // 2. Base Apple Body
+                // 2. Base Body
                 ctx.fillStyle = isGolden ? '#f1c40f' : '#e74c3c';
                 ctx.beginPath();
                 ctx.arc(cx - r * 0.28, cy, r * 0.75, 0, Math.PI * 2);
@@ -1013,19 +1029,19 @@
                 ctx.arc(cx, cy + r * 0.25, r * 0.72, 0, Math.PI * 2);
                 ctx.fill();
 
-                // 3. Shading / 3D Gradient Emulation
+                // 3. Shading
                 ctx.fillStyle = isGolden ? '#d4ac0d' : '#c0392b';
                 ctx.beginPath();
                 ctx.arc(cx, cy + r * 0.3, r * 0.65, 0, Math.PI);
                 ctx.fill();
 
-                // 4. Glossy Specular Highlight
+                // 4. Highlight
                 ctx.fillStyle = isGolden ? '#fff9c4' : '#ff7675';
                 ctx.beginPath();
                 ctx.arc(cx - r * 0.3, cy - r * 0.35, r * 0.25, 0, Math.PI * 2);
                 ctx.fill();
 
-                // 5. Wooden Stem
+                // 5. Stem
                 ctx.strokeStyle = '#5d4037';
                 ctx.lineWidth = Math.max(2, tileSize * 0.08);
                 ctx.beginPath();
@@ -1048,14 +1064,14 @@
             clearInterval(hungerInterval);
             if (gameLoopTimeout) clearTimeout(gameLoopTimeout);
 
-            overlayTitleEl.textContent = reason === "SNAKE STARVED" ? "VERHUNGERT!" : "GAME OVER";
+            overlayTitleEl.textContent = reason === "SNAKE STARVED" ? "SNAKE STARVED!" : "GAME OVER";
             overlayTitleEl.classList.remove('win-title');
 
             endStatsEl.innerHTML = `
-                <strong>Länge:</strong> ${snake.length}<br>
+                <strong>Length:</strong> ${snake.length}<br>
                 <strong>Score:</strong> ${score}<br>
-                <strong>Gifts Gesamt:</strong> €${totalGiftValue.toFixed(2)}<br>
-                <strong>Events:</strong> ${unlockedEventsList.length > 0 ? unlockedEventsList.join(', ') : 'Keine'}
+                <strong>Total Gifts:</strong> $${totalGiftValue.toFixed(2)}<br>
+                <strong>Events:</strong> ${unlockedEventsList.length > 0 ? unlockedEventsList.join(', ') : 'None'}
             `;
             overlayEl.classList.add('active');
         }
@@ -1070,9 +1086,9 @@
 
             endStatsEl.innerHTML = `
                 <h3 style="color:#ffeb3b; margin-bottom:10px;">THE LIVE IS OVER</h3>
-                <strong>Finale Länge:</strong> ${snake.length}<br>
+                <strong>Final Length:</strong> ${snake.length}<br>
                 <strong>Score:</strong> ${score}<br>
-                <strong>Total Gifts:</strong> €${totalGiftValue.toFixed(2)}<br>
+                <strong>Total Gifts:</strong> $${totalGiftValue.toFixed(2)}<br>
                 <strong>Events Unlocked:</strong> ${unlockedEventsList.join(', ')}
             `;
             overlayEl.classList.add('active');
@@ -1081,12 +1097,14 @@
         // Start game on load
         resetGame();
     </script>
-<div style="text-align:center; margin:20px 0;">
-  <a href="terms.html">Terms of Service</a>
-  &nbsp; | &nbsp;
-  <a href="privacy.html">Privacy Policy</a>
-</div><div style="text-align:center; padding:20px; font-family:Arial,sans-serif;">
-  <a href="terms.html" style="margin:0 10px;">Terms of Service</a>
-  <a href="privacy.html" style="margin:0 10px;">Privacy Policy</a>
+<!-- Legal Links -->
+<div style="text-align:center; padding:20px; font-family:Arial,sans-serif;">
+    <a href="terms.html" style="margin:0 10px; color:inherit; text-decoration:underline;">
+        Terms of Service
+    </a>
+    |
+    <a href="privacy.html" style="margin:0 10px; color:inherit; text-decoration:underline;">
+        Privacy Policy
+    </a>
 </div></body>
 </html>
