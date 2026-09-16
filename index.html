@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Arcade Snake - TikTok LIVE Edition</title>
+    <style>
+        :root {
+            --bg-color: #0b0c10;
+            --panel-bg: #1f2833;
+            --neon-green: #00ff66;
+            --neon-pink: #ff007f;
+            --neon-cyan: #00f3ff;
+            --neon-gold: #ffd700;
+            --neon-purple: #9d00ff;
+            --text-color: #c5c6c7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            gap: 25px;
+            max-width: 1100px;
+            width: 100%;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* --- GAME SECTION --- */
+        .game-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #12131c;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.15),
+                        inset 0 0 15px rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(0, 243, 255, 0.3);
+        }
+
+        .scoreboard {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .score-box {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .score-val {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 8px var(--neon-cyan);
+        }
+
+        .highscore-val {
+            color: var(--neon-pink);
+            text-shadow: 0 0 8px var(--neon-pink);
+        }
+
+        .canvas-wrapper {
+            position: relative;
+        }
+
+        canvas {
+            background-color: #050508;
+            border: 3px solid var(--neon-cyan);
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+            display: block;
+        }
+
+        /* Game Over Overlay */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 8, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .game-over-title {
+            font-size: 2.5rem;
+            color: var(--neon-pink);
+            text-shadow: 0 0 15px var(--neon-pink);
+            margin-bottom: 10px;
+            font-weight: 900;
+        }
+
+        .btn-restart {
+            margin-top: 15px;
+            padding: 12px 28px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #000;
+            background: var(--neon-green);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--neon-green);
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-restart:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 25px var(--neon-green);
+        }
+
+        /* --- DASHBOARD & STREAM CONTROLS --- */
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 320px;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+
+        .panel h2 {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #8892b0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 8px;
+        }
+
+        .gift-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-gift {
+            background: #12131c;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 12px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-gift:hover {
+            border-color: var(--neon-cyan);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 243, 255, 0.2);
+        }
+
+        .btn-gift span {
+            font-size: 1.3rem;
+        }
+
+        .btn-gift small {
+            font-size: 0.75rem;
+            color: #8892b0;
+        }
+
+        /* Custom color accent hover states for gifts */
+        .btn-gift[data-gift="rose"]:hover { border-color: #ff3366; }
+        .btn-gift[data-gift="heart"]:hover { border-color: var(--neon-pink); }
+        .btn-gift[data-gift="lion"]:hover { border-color: var(--neon-gold); }
+        .btn-gift[data-gift="universe"]:hover { border-color: var(--neon-purple); }
+
+        /* Event Log */
+        .event-log {
+            height: 180px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-right: 5px;
+        }
+
+        /* Custom scrollbar for log */
+        .event-log::-webkit-scrollbar {
+            width: 6px;
+        }
+        .event-log::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+        }
+
+        .log-entry {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 3px solid var(--neon-cyan);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Main Game Section -->
+        <div class="game-section">
+            <div class="scoreboard">
+                <div class="score-box">SCORE: <span id="score" class="score-val">0</span></div>
+                <div class="score-box">BEST: <span id="high-score" class="highscore-val">0</span></div>
+            </div>
+
+            <div class="canvas-wrapper">
+                <canvas id="gameCanvas" width="400" height="400"></canvas>
+                
+                <!-- Game Over Overlay -->
+                <div id="overlay" class="overlay">
+                    <div class="game-over-title">GAME OVER</div>
+                    <div style="margin-bottom: 10px; color: #8892b0;">FINAL SCORE: <span id="final-score" style="color:#fff;">0</span></div>
+                    <button class="btn-restart" onclick="resetGame()">PLAY AGAIN</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard / Stream Controls Section -->
+        <div class="dashboard">
+            <!-- Test Controls -->
+            <div class="panel">
+                <h2>Test Controls</h2>
+                <div class="gift-grid">
+                    <button class="btn-gift" data-gift="rose" onclick="handleGift('rose')">
+                        <span>🌹</span> Rose
+                        <small>+1 Apple</small>
+                    </button>
+                    <button class="btn-gift" data-gift="heart" onclick="handleGift('heart')">
+                        <span>❤️</span> Heart
+                        <small>+3 Apples</small>
+                    </button>
+                    <button class="btn-gift" data-gift="lion" onclick="handleGift('lion')">
+                        <span>🦁</span> Lion
+                        <small>+10 Apples</small>
+                    </button>
+                    <button class="btn-gift" data-gift="universe" onclick="handleGift('universe')">
+                        <span>🌌</span> Universe
+                        <small>+25 Apples</small>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Event Log -->
+            <div class="panel">
+                <h2>Live Event Log</h2>
+                <div id="eventLog" class="event-log"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CONSTANTS & CANVAS SETUP ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const GRID_SIZE = 20; // 20x20 grid
+        const TILE_SIZE = canvas.width / GRID_SIZE; // 20px per cell
+        const INITIAL_SPEED = 130; // Initial interval in ms
+        const MIN_SPEED = 50; // Max speed cap
+
+        // --- GAME STATE VARIABLES ---
+        let snake = [];
+        let dx = 1;
+        let dy = 0;
+        let nextDx = 1;
+        let nextDy = 0;
+        let apples = [];
+        let score = 0;
+        let highScore = localStorage.getItem('snake_high_score') || 0;
+        let gameInterval = null;
+        let isGameOver = false;
+        let currentSpeed = INITIAL_SPEED;
+
+        // UI References
+        const scoreEl = document.getElementById('score');
+        const highScoreEl = document.getElementById('high-score');
+        const finalScoreEl = document.getElementById('final-score');
+        const overlayEl = document.getElementById('overlay');
+        const logEl = document.getElementById('eventLog');
+
+        highScoreEl.textContent = highScore;
+
+        // --- CORE GAME LOOP ---
+        function main() {
+            if (isGameOver) return;
+
+            // Apply direction queued from keypress
+            dx = nextDx;
+            dy = nextDy;
+
+            moveSnake();
+
+            if (checkCollision()) {
+                endGame();
+                return;
+            }
+
+            checkFoodCollision();
+            draw();
+        }
+
+        function startGame() {
+            if (gameInterval) clearInterval(gameInterval);
+            gameInterval = setInterval(main, currentSpeed);
+        }
+
+        function resetGame() {
+            snake = [
+                { x: 5, y: 10 },
+                { x: 4, y: 10 },
+                { x: 3, y: 10 }
+            ];
+            dx = 1;
+            dy = 0;
+            nextDx = 1;
+            nextDy = 0;
+            score = 0;
+            currentSpeed = INITIAL_SPEED;
+            isGameOver = false;
+            apples = [];
+
+            scoreEl.textContent = score;
+            overlayEl.classList.remove('active');
+
+            // Spawn initial apple
+            spawnApple();
+
+            draw();
+            startGame();
+        }
+
+        // --- LOGIC FUNCTIONS ---
+        function moveSnake() {
+            const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+            snake.unshift(head);
+            snake.pop(); // Remove tail unless food was eaten in checkFoodCollision
+        }
+
+        function updateSpeed() {
+            // Speed up slightly as score increases
+            const newSpeed = Math.max(MIN_SPEED, INITIAL_SPEED - Math.floor(score / 2) * 3);
+            if (newSpeed !== currentSpeed) {
+                currentSpeed = newSpeed;
+                startGame(); // Reset timer interval with new speed
+            }
+        }
+
+        function checkCollision() {
+            const head = snake[0];
+
+            // Wall collisions
+            if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
+                return true;
+            }
+
+            // Self collisions (skip index 0 since it's the head)
+            for (let i = 1; i < snake.length; i++) {
+                if (head.x === snake[i].x && head.y === snake[i].y) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        function checkFoodCollision() {
+            const head = snake[0];
+
+            for (let i = apples.length - 1; i >= 0; i--) {
+                if (head.x === apples[i].x && head.y === apples[i].y) {
+                    // Remove eaten apple
+                    apples.splice(i, 1);
+
+                    // Grow snake (re-add a segment at tail position)
+                    const tail = { ...snake[snake.length - 1] };
+                    snake.push(tail);
+
+                    // Update Score
+                    score += 1;
+                    scoreEl.textContent = score;
+
+                    if (score > highScore) {
+                        highScore = score;
+                        highScoreEl.textContent = highScore;
+                        localStorage.setItem('snake_high_score', highScore);
+                    }
+
+                    // Dynamically increase game speed
+                    updateSpeed();
+
+                    // If no apples left on board, ensure at least 1 spawns
+                    if (apples.length === 0) {
+                        spawnApple();
+                    }
+                    break;
+                }
+            }
+        }
+
+        function endGame() {
+            isGameOver = true;
+            clearInterval(gameInterval);
+            finalScoreEl.textContent = score;
+            overlayEl.classList.add('active');
+        }
+
+        // --- PUBLIC EXPOSED FUNCTIONS (REQUIRED) ---
+
+        /**
+         * Immediately spawns one apple at a valid random grid position.
+         */
+        function spawnApple() {
+            let validPos = false;
+            let newApple = { x: 0, y: 0 };
+            let maxAttempts = 100;
+
+            while (!validPos && maxAttempts > 0) {
+                maxAttempts--;
+                newApple = {
+                    x: Math.floor(Math.random() * GRID_SIZE),
+                    y: Math.floor(Math.random() * GRID_SIZE)
+                };
+
+                // Ensure apple doesn't spawn on top of the snake
+                const onSnake = snake.some(segment => segment.x === newApple.x && segment.y === newApple.y);
+                // Ensure apple doesn't spawn on top of an existing apple
+                const onApple = apples.some(apple => apple.x === newApple.x && apple.y === newApple.y);
+
+                if (!onSnake && !onApple) {
+                    validPos = true;
+                }
+            }
+
+            if (validPos) {
+                apples.push(newApple);
+                draw(); // Redraw immediately to show new apple
+            }
+        }
+
+        /**
+         * Handles incoming simulated/real gift events.
+         * @param {string} giftName 
+         */
+        function handleGift(giftName) {
+            let count = 0;
+            let logText = "";
+            let borderColor = "#00f3ff";
+
+            switch (giftName.toLowerCase()) {
+                case 'rose':
+                    count = 1;
+                    logText = "🌹 Rose → +1 Apple";
+                    borderColor = "#ff3366";
+                    break;
+                case 'heart':
+                    count = 3;
+                    logText = "❤️ Heart → +3 Apples";
+                    borderColor = "#ff007f";
+                    break;
+                case 'lion':
+                    count = 10;
+                    logText = "🦁 Lion → +10 Apples";
+                    borderColor = "#ffd700";
+                    break;
+                case 'universe':
+                    count = 25;
+                    logText = "🌌 Universe → +25 Apples";
+                    borderColor = "#9d00ff";
+                    break;
+                default:
+                    return;
+            }
+
+            // Spawn the required amount of apples
+            for (let i = 0; i < count; i++) {
+                spawnApple();
+            }
+
+            // Add entry to UI log
+            addLogEntry(logText, borderColor);
+        }
+
+        function addLogEntry(text, color) {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.style.borderLeftColor = color;
+            entry.textContent = text;
+
+            logEl.prepend(entry); // Newest at top
+        }
+
+        // --- RENDER FUNCTIONS ---
+        function draw() {
+            // Clear Background
+            ctx.fillStyle = '#050508';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Subtle Grid
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < canvas.width; i += TILE_SIZE) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, canvas.height);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(canvas.width, i);
+                ctx.stroke();
+            }
+
+            // Draw Snake
+            snake.forEach((segment, index) => {
+                const isHead = index === 0;
+                
+                // Head is vibrant neon cyan, body is neon green gradient
+                ctx.fillStyle = isHead ? '#00f3ff' : '#00ff66';
+                ctx.shadowColor = isHead ? '#00f3ff' : '#00ff66';
+                ctx.shadowBlur = isHead ? 12 : 6;
+
+                ctx.beginPath();
+                ctx.roundRect(
+                    segment.x * TILE_SIZE + 1,
+                    segment.y * TILE_SIZE + 1,
+                    TILE_SIZE - 2,
+                    TILE_SIZE - 2,
+                    isHead ? 5 : 3
+                );
+                ctx.fill();
+            });
+
+            // Draw Apples
+            ctx.fillStyle = '#ff007f';
+            ctx.shadowColor = '#ff007f';
+            ctx.shadowBlur = 10;
+
+            apples.forEach(apple => {
+                ctx.beginPath();
+                ctx.arc(
+                    apple.x * TILE_SIZE + TILE_SIZE / 2,
+                    apple.y * TILE_SIZE + TILE_SIZE / 2,
+                    (TILE_SIZE / 2) - 2,
+                    0,
+                    Math.PI * 2
+                );
+                ctx.fill();
+            });
+
+            // Reset shadow effect after rendering glows
+            ctx.shadowBlur = 0;
+        }
+
+        // --- CONTROLS / INPUT HANDLING ---
+        window.addEventListener('keydown', e => {
+            // Prevent scrolling with Arrow Keys
+            if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)) {
+                e.preventDefault();
+            }
+
+            // WASD & Arrow Key controls with reverse-direction protection
+            switch (e.key) {
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                    if (dy !== 1) { nextDx = 0; nextDy = -1; }
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                    if (dy !== -1) { nextDx = 0; nextDy = 1; }
+                    break;
+                case 'ArrowLeft':
+                case 'a':
+                case 'A':
+                    if (dx !== 1) { nextDx = -1; nextDy = 0; }
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                    if (dx !== -1) { nextDx = 1; nextDy = 0; }
+                    break;
+            }
+        });
+
+        // Initialize game on startup
+        resetGame();
+    </script>
+</body>
+</html>
