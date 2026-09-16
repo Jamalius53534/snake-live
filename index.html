@@ -3,31 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon AI Snake - TikTok LIVE Edition</title>
+    <title>Google Snake Natural Edition - TikTok LIVE</title>
     <style>
         :root {
-            --bg-color: #050508;
-            --panel-bg: #12131c;
-            --panel-border: rgba(0, 243, 255, 0.2);
-            --neon-green: #00ff66;
-            --neon-pink: #ff007f;
-            --neon-cyan: #00f3ff;
-            --neon-gold: #ffd700;
-            --neon-purple: #9d00ff;
-            --text-color: #c5c6c7;
+            --bg-color: #4a752c;
+            --ui-text: #ffffff;
+            --ui-bg: rgba(0, 0, 0, 0.25);
+            --gold: #f1c40f;
+            --apple-red: #e74c3c;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             user-select: none;
         }
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--ui-text);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -51,65 +47,57 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            background: var(--panel-bg);
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 0 25px rgba(0, 243, 255, 0.15);
-            border: 2px solid var(--panel-border);
+            background: rgba(0, 0, 0, 0.12);
+            padding: 16px;
+            border-radius: 28px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
             position: relative;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+        /* Floating Minimal Header UI */
+        .floating-ui {
+            display: flex;
             gap: 10px;
             width: 100%;
-            max-width: 450px;
-            margin-bottom: 15px;
-            font-weight: bold;
+            max-width: 500px;
+            margin-bottom: 12px;
+            justify-content: space-between;
+        }
+
+        .pill-stat {
+            background: var(--ui-bg);
+            padding: 6px 14px;
+            border-radius: 50px;
             font-size: 0.9rem;
-            text-transform: uppercase;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        .stat-box {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            text-align: center;
-        }
-
-        .stat-val {
-            display: block;
-            font-size: 1.1rem;
-            margin-top: 2px;
-        }
-
-        .val-cyan { color: var(--neon-cyan); text-shadow: 0 0 8px var(--neon-cyan); }
-        .val-green { color: var(--neon-green); text-shadow: 0 0 8px var(--neon-green); }
-        .val-pink { color: var(--neon-pink); text-shadow: 0 0 8px var(--neon-pink); }
-        .val-gold { color: var(--neon-gold); text-shadow: 0 0 8px var(--neon-gold); }
-        .val-purple { color: var(--neon-purple); text-shadow: 0 0 8px var(--neon-purple); }
-
-        /* Hunger Bar */
+        /* Hunger Bar UI */
         .hunger-container {
             width: 100%;
-            max-width: 450px;
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 10px;
-            height: 20px;
-            margin-bottom: 15px;
+            max-width: 500px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 50px;
+            height: 14px;
+            margin-bottom: 12px;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .hunger-bar {
             height: 100%;
             width: 100%;
-            background: linear-gradient(90deg, #ff0055, var(--neon-green));
-            transition: width 0.2s linear;
-            box-shadow: 0 0 10px var(--neon-green);
+            background: linear-gradient(90deg, #e74c3c, #2ecc71);
+            border-radius: 50px;
+            transition: width 0.15s linear;
         }
 
         .hunger-text {
@@ -117,42 +105,39 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 0.75rem;
-            font-weight: bold;
+            font-size: 0.65rem;
+            font-weight: 800;
             color: #fff;
-            text-shadow: 0 0 4px #000;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            letter-spacing: 0.5px;
         }
 
         .canvas-wrapper {
             position: relative;
             overflow: hidden;
-            border-radius: 8px;
+            border-radius: 20px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
         }
 
         canvas {
-            background-color: #030305;
-            border: 3px solid var(--neon-cyan);
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
             display: block;
-            transition: border-color 0.5s ease;
+            border-radius: 20px;
         }
 
-        /* Banner Overlay for Announcements */
+        /* Floating Banner Overlay */
         .banner {
             position: absolute;
-            top: 20%;
+            top: 15%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0);
-            background: rgba(0, 0, 0, 0.85);
-            border: 2px solid var(--neon-gold);
-            padding: 15px 30px;
-            border-radius: 12px;
-            color: var(--neon-gold);
-            font-size: 1.5rem;
-            font-weight: 900;
+            background: rgba(255, 255, 255, 0.95);
+            color: #2c3e50;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 800;
             text-align: center;
-            text-shadow: 0 0 15px var(--neon-gold);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             pointer-events: none;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.27);
             z-index: 5;
@@ -170,13 +155,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(5, 5, 8, 0.92);
+            background: rgba(30, 45, 20, 0.92);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            border-radius: 8px;
-            backdrop-filter: blur(5px);
+            border-radius: 20px;
+            backdrop-filter: blur(6px);
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
@@ -192,42 +177,41 @@
 
         .game-over-title {
             font-size: 2.2rem;
-            color: var(--neon-pink);
-            text-shadow: 0 0 15px var(--neon-pink);
-            margin-bottom: 10px;
+            color: #ff5252;
+            margin-bottom: 8px;
             font-weight: 900;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         .win-title {
-            color: var(--neon-gold);
-            text-shadow: 0 0 20px var(--neon-gold);
+            color: #ffeb3b;
         }
 
         .end-stats {
             margin: 15px 0;
             line-height: 1.8;
-            font-size: 1rem;
-            color: #fff;
+            font-size: 0.95rem;
+            color: #f1f2f6;
         }
 
         .btn-restart {
-            margin-top: 15px;
-            padding: 12px 28px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #000;
-            background: var(--neon-green);
+            margin-top: 12px;
+            padding: 12px 32px;
+            font-size: 1rem;
+            font-weight: 800;
+            color: #fff;
+            background: #2ecc71;
             border: none;
-            border-radius: 25px;
+            border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 0 15px var(--neon-green);
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
             transition: all 0.2s ease;
             text-transform: uppercase;
         }
 
         .btn-restart:hover {
-            transform: scale(1.08);
-            box-shadow: 0 0 25px var(--neon-green);
+            transform: scale(1.05);
+            background: #27ae60;
         }
 
         /* --- DASHBOARD & STREAM CONTROLS --- */
@@ -235,62 +219,56 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            width: 320px;
+            width: 310px;
         }
 
         .panel {
-            background: var(--panel-bg);
-            padding: 18px;
-            border-radius: 12px;
-            border: 1px solid var(--panel-border);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            background: var(--ui-bg);
+            padding: 16px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         .panel h2 {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: #8892b0;
-            margin-bottom: 12px;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 10px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 6px;
+            padding-bottom: 5px;
         }
 
         .gift-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 8px;
         }
 
         .btn-gift {
-            background: #08090d;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255,255,255,0.18);
             color: #fff;
             padding: 10px 8px;
-            border-radius: 8px;
+            border-radius: 14px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 3px;
+            gap: 2px;
             transition: all 0.2s ease;
         }
 
         .btn-gift:hover {
-            border-color: var(--neon-cyan);
+            background: rgba(255, 255, 255, 0.22);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 243, 255, 0.2);
         }
 
         .btn-gift span { font-size: 1.2rem; }
-        .btn-gift small { font-size: 0.7rem; color: #8892b0; }
-
-        /* Color accents for gift buttons */
-        .btn-gift[data-gift="rose"]:hover { border-color: #ff3366; }
-        .btn-gift[data-gift="heart"]:hover { border-color: var(--neon-pink); }
-        .btn-gift[data-gift="lion"]:hover { border-color: var(--neon-gold); }
-        .btn-gift[data-gift="universe"]:hover { border-color: var(--neon-purple); }
+        .btn-gift small { font-size: 0.65rem; opacity: 0.85; }
 
         /* Event Log */
         .event-log {
@@ -304,21 +282,21 @@
 
         .event-log::-webkit-scrollbar { width: 4px; }
         .event-log::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.2);
-            border-radius: 2px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
         }
 
         .log-entry {
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.2);
             padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            border-left: 3px solid var(--neon-cyan);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            border-left: 3px solid #2ecc71;
             animation: fadeIn 0.3s ease;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(-10px); }
+            from { opacity: 0; transform: translateX(-8px); }
             to { opacity: 1; transform: translateX(0); }
         }
     </style>
@@ -328,15 +306,13 @@
     <div class="container">
         <!-- Main Game Section -->
         <div class="game-section">
-            <div class="stats-grid">
-                <div class="stat-box">LENGTH <span id="snake-len" class="stat-val val-cyan">3</span></div>
-                <div class="stat-box">APPLES <span id="apple-count" class="stat-val val-pink">0</span></div>
-                <div class="stat-box">SCORE <span id="score" class="stat-val val-green">0</span></div>
-            </div>
-
-            <div class="stats-grid" style="grid-template-columns: 1fr 1fr; max-width: 450px;">
-                <div class="stat-box">TOTAL GIFTS <span id="total-gifts" class="stat-val val-gold">€0.00</span></div>
-                <div class="stat-box">HIGH SCORE <span id="high-score" class="stat-val val-purple">0</span></div>
+            <!-- Floating Minimal Header UI -->
+            <div class="floating-ui">
+                <div class="pill-stat">🐍 <span id="snake-len">3</span></div>
+                <div class="pill-stat">🍎 <span id="apple-count">0</span></div>
+                <div class="pill-stat">⭐ <span id="score">0</span></div>
+                <div class="pill-stat">🎁 <span id="total-gifts">€0.00</span></div>
+                <div class="pill-stat">🏆 <span id="high-score">0</span></div>
             </div>
 
             <!-- Hunger Bar -->
@@ -346,7 +322,7 @@
             </div>
 
             <div class="canvas-wrapper">
-                <canvas id="gameCanvas" width="400" height="400"></canvas>
+                <canvas id="gameCanvas" width="500" height="500"></canvas>
                 
                 <!-- Overlay Banner for Special Events -->
                 <div id="banner" class="banner"></div>
@@ -355,7 +331,7 @@
                 <div id="overlay" class="overlay">
                     <div id="overlay-title" class="game-over-title">GAME OVER</div>
                     <div id="end-stats" class="end-stats"></div>
-                    <button class="btn-restart" onclick="resetGame()">RESTART GAME</button>
+                    <button class="btn-restart" onclick="resetGame()">NEUSTART</button>
                 </div>
             </div>
         </div>
@@ -368,19 +344,19 @@
                 <div class="gift-grid">
                     <button class="btn-gift" data-gift="rose" onclick="handleGift('rose', 0.10)">
                         <span>🌹</span> Rose
-                        <small>+1 Apple (€0.10)</small>
+                        <small>+1 Apfel (€0.10)</small>
                     </button>
                     <button class="btn-gift" data-gift="heart" onclick="handleGift('heart', 1.00)">
                         <span>❤️</span> Heart
-                        <small>+3 Apples (€1.00)</small>
+                        <small>+3 Äpfel (€1.00)</small>
                     </button>
                     <button class="btn-gift" data-gift="lion" onclick="handleGift('lion', 10.00)">
                         <span>🦁</span> Lion
-                        <small>+10 Apples (€10.00)</small>
+                        <small>+10 Äpfel (€10.00)</small>
                     </button>
                     <button class="btn-gift" data-gift="universe" onclick="handleGift('universe', 25.00)">
                         <span>🌌</span> Universe
-                        <small>+25 Apples (€25.00)</small>
+                        <small>+25 Äpfel (€25.00)</small>
                     </button>
                 </div>
             </div>
@@ -398,18 +374,19 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Dynamic Grid Configurations
-        let gridSize = 12; // Start small (12x12)
-        const CANVAS_PIXEL_SIZE = 400;
+        let gridSize = 12;
+        const CANVAS_PIXEL_SIZE = 500;
         let tileSize = CANVAS_PIXEL_SIZE / gridSize;
 
-        const MAX_HUNGER = 30.0; // 30 seconds
-        const BASE_TICK_RATE = 140; // Base speed in ms per move
+        const MAX_HUNGER = 30.0;
+        const BASE_TICK_RATE = 140;
 
         // --- GAME STATE VARIABLES ---
         let snake = [];
-        let secondSnake = []; // For Double Snake event (€25)
-        let apples = [];
+        let renderSnake = []; // For visual smooth interpolation
+        let secondSnake = []; 
+        let renderSecondSnake = [];
+        let apples = []; 
         let score = 0;
         let totalGiftValue = 0.00;
         let hunger = MAX_HUNGER;
@@ -418,15 +395,17 @@
         let isGameOver = false;
         let gameLoopTimeout = null;
         let hungerInterval = null;
+        let animFrameId = null;
         let deathReason = "";
+        let lastMoveTime = Date.now();
+        let currentTickDelay = BASE_TICK_RATE;
 
-        // Event Flags (Unlocked once per milestone)
         let milestones = {
-            speedBoost: false,  // €5
-            goldenApples: false,// €10
-            doubleSnake: false, // €25
-            superMode: false,   // €50
-            chaosMode: false    // €100
+            speedBoost: false,
+            goldenApples: false,
+            doubleSnake: false,
+            superMode: false,
+            chaosMode: false
         };
 
         let unlockedEventsList = [];
@@ -458,7 +437,9 @@
                 { x: 1, y: 6 }
             ];
             
+            renderSnake = snake.map(s => ({ x: s.x, y: s.y }));
             secondSnake = [];
+            renderSecondSnake = [];
             apples = [];
             score = 0;
             totalGiftValue = 0.00;
@@ -477,14 +458,15 @@
 
             updateUI();
             overlayEl.classList.remove('active');
-            canvas.style.borderColor = "var(--neon-cyan)";
 
-            // Start Timers
             if (gameLoopTimeout) clearTimeout(gameLoopTimeout);
             if (hungerInterval) clearInterval(hungerInterval);
+            if (animFrameId) cancelAnimationFrame(animFrameId);
 
             hungerInterval = setInterval(updateHunger, 100);
+            lastMoveTime = Date.now();
             gameLoop();
+            renderLoop();
         }
 
         function updateGridSize(newSize) {
@@ -492,7 +474,6 @@
             tileSize = CANVAS_PIXEL_SIZE / gridSize;
         }
 
-        // --- DYNAMIC GRID EXPANSION ---
         function checkGridGrowth() {
             let targetSize = 12;
             const len = snake.length;
@@ -505,52 +486,46 @@
 
             if (targetSize !== gridSize) {
                 updateGridSize(targetSize);
-                logEvent(`📐 Spielfeld erweitert auf ${gridSize}x${gridSize}!`, "#00f3ff");
+                logEvent(`📐 Spielfeld erweitert auf ${gridSize}x${gridSize}!`, "#2ecc71");
             }
         }
 
-        // --- GAME LOOP ---
+        // --- GAME LOGIC LOOP ---
         function gameLoop() {
             if (isGameOver) return;
 
-            // Check if Snake completely fills grid
             if (snake.length >= gridSize * gridSize) {
                 triggerWin();
                 return;
             }
 
-            // Move Primary AI Snake
             const nextPos = getNextAiMove(snake[0], snake);
             if (!nextPos) {
-                // Trap state / self-collision
                 endGame("SELF-COLLISION / TRAPPED");
                 return;
             }
 
             snake.unshift(nextPos);
 
-            // Check if Snake ate an apple
             let ateApple = false;
             for (let i = apples.length - 1; i >= 0; i--) {
                 if (snake[0].x === apples[i].x && snake[0].y === apples[i].y) {
                     apples.splice(i, 1);
                     ateApple = true;
                     
-                    // Reward
                     const pts = milestones.goldenApples ? 30 : 10;
                     score += pts;
-                    hunger = MAX_HUNGER; // Reset hunger timer
+                    hunger = MAX_HUNGER;
                     break;
                 }
             }
 
             if (!ateApple) {
-                snake.pop(); // Remove tail segment if no apple eaten
+                snake.pop();
             } else {
                 checkGridGrowth();
             }
 
-            // Move Second Snake if unlocked
             if (milestones.doubleSnake && secondSnake.length > 0) {
                 const nextPos2 = getNextAiMove(secondSnake[0], secondSnake);
                 if (nextPos2) {
@@ -559,7 +534,6 @@
                 }
             }
 
-            // Check Highscore
             if (score > highScore) {
                 highScore = score;
                 highScoreEl.textContent = highScore;
@@ -567,30 +541,71 @@
             }
 
             updateUI();
-            draw();
 
-            // Calculate tick delay based on milestones
-            let delay = BASE_TICK_RATE;
-            if (milestones.chaosMode) delay = 50;
-            else if (milestones.superMode) delay = 70;
-            else if (milestones.speedBoost) delay = 100;
+            lastMoveTime = Date.now();
+            currentTickDelay = BASE_TICK_RATE;
+            if (milestones.chaosMode) currentTickDelay = 50;
+            else if (milestones.superMode) currentTickDelay = 70;
+            else if (milestones.speedBoost) currentTickDelay = 100;
 
-            gameLoopTimeout = setTimeout(gameLoop, delay);
+            gameLoopTimeout = setTimeout(gameLoop, currentTickDelay);
         }
 
-        // --- BFS PATHFINDING AI ---
+        // Smooth Sub-Pixel Animation Frame Loop
+        function renderLoop() {
+            const now = Date.now();
+            const progress = Math.min(1, (now - lastMoveTime) / currentTickDelay);
+
+            // Interpolate snake segments positions smoothly
+            updateRenderSnakePositions(snake, renderSnake, progress);
+            if (secondSnake.length > 0) {
+                updateRenderSnakePositions(secondSnake, renderSecondSnake, progress);
+            }
+
+            // Animate Apple Spawn Scale
+            apples.forEach(apple => {
+                if (apple.scale < 1) {
+                    apple.scale += 0.08;
+                    if (apple.scale > 1) apple.scale = 1;
+                }
+            });
+
+            draw();
+
+            if (!isGameOver) {
+                animFrameId = requestAnimationFrame(renderLoop);
+            }
+        }
+
+        function updateRenderSnakePositions(logicalSnake, renderArray, progress) {
+            while (renderArray.length < logicalSnake.length) {
+                const last = logicalSnake[logicalSnake.length - 1];
+                renderArray.push({ x: last.x, y: last.y });
+            }
+            while (renderArray.length > logicalSnake.length) {
+                renderArray.pop();
+            }
+
+            for (let i = 0; i < logicalSnake.length; i++) {
+                const target = logicalSnake[i];
+                const current = renderArray[i];
+
+                current.x = current.x + (target.x - current.x) * (progress * 0.4);
+                current.y = current.y + (target.y - current.y) * (progress * 0.4);
+            }
+        }
+
+        // --- PATHFINDING AI ---
         function getNextAiMove(head, currentBody) {
-            // Find closest reachable apple
             let targetApple = findClosestReachableApple(head, currentBody);
 
             if (targetApple) {
                 let path = findPathBFS(head, targetApple, currentBody);
                 if (path && path.length > 1) {
-                    return path[1]; // Move towards target
+                    return path[1];
                 }
             }
 
-            // Safe fallback move if no path to apple exists
             return getSafeFallbackMove(head, currentBody);
         }
 
@@ -601,7 +616,6 @@
             for (let apple of apples) {
                 let dist = Math.abs(head.x - apple.x) + Math.abs(head.y - apple.y);
                 if (dist < minDistance) {
-                    // Check if path actually exists
                     let path = findPathBFS(head, apple, body);
                     if (path) {
                         minDistance = dist;
@@ -616,7 +630,6 @@
             let queue = [[start]];
             let visited = Array.from({ length: gridSize }, () => Array(gridSize).fill(false));
             
-            // Mark snake body as wall (except tail which moves away)
             for (let i = 0; i < body.length - 1; i++) {
                 let seg = body[i];
                 if (seg.x >= 0 && seg.x < gridSize && seg.y >= 0 && seg.y < gridSize) {
@@ -649,7 +662,7 @@
                     }
                 }
             }
-            return null; // No path found
+            return null;
         }
 
         function getSafeFallbackMove(head, body) {
@@ -665,7 +678,6 @@
                 let ny = head.y + dir.y;
 
                 if (nx >= 0 && nx < gridSize && ny >= 0 && ny < gridSize) {
-                    // Check collision with snake body
                     let collides = body.some(seg => seg.x === nx && seg.y === ny);
                     if (!collides) {
                         safeMoves.push({ x: nx, y: ny });
@@ -673,9 +685,8 @@
                 }
             }
 
-            if (safeMoves.length === 0) return null; // Fully trapped
+            if (safeMoves.length === 0) return null;
 
-            // Choose the safe move with the most open space around it
             safeMoves.sort((a, b) => countFreeNeighbors(b, body) - countFreeNeighbors(a, body));
             return safeMoves[0];
         }
@@ -708,24 +719,22 @@
             hungerTextEl.textContent = `HUNGER: ${hunger.toFixed(1)}s`;
 
             if (pct < 25) {
-                hungerBarEl.style.background = "#ff0000";
+                hungerBarEl.style.background = "#e74c3c";
             } else {
-                hungerBarEl.style.background = "linear-gradient(90deg, #ff0055, var(--neon-green))";
+                hungerBarEl.style.background = "linear-gradient(90deg, #e74c3c, #2ecc71)";
             }
         }
 
         // --- PUBLIC EXPOSED GIFT SYSTEM ---
         function spawnApple() {
             let validPos = false;
-            let newApple = { x: 0, y: 0 };
+            let newApple = { x: 0, y: 0, scale: 0.1 };
             let maxAttempts = 150;
 
             while (!validPos && maxAttempts > 0) {
                 maxAttempts--;
-                newApple = {
-                    x: Math.floor(Math.random() * gridSize),
-                    y: Math.floor(Math.random() * gridSize)
-                };
+                newApple.x = Math.floor(Math.random() * gridSize);
+                newApple.y = Math.floor(Math.random() * gridSize);
 
                 const onSnake = snake.some(s => s.x === newApple.x && s.y === newApple.y);
                 const onSnake2 = secondSnake.some(s => s.x === newApple.x && s.y === newApple.y);
@@ -746,44 +755,39 @@
 
             let appleCount = 1;
             let logText = "";
-            let color = "#00f3ff";
+            let color = "#2ecc71";
 
             switch (giftName.toLowerCase()) {
                 case 'rose':
                     appleCount = 1;
-                    logText = "🌹 Rose → +1 Apple";
-                    color = "#ff3366";
+                    logText = "🌹 Rose → +1 Apfel";
+                    color = "#ff4757";
                     break;
                 case 'heart':
                     appleCount = 3;
-                    logText = "❤️ Heart → +3 Apples";
-                    color = "#ff007f";
+                    logText = "❤️ Heart → +3 Äpfel";
+                    color = "#e84393";
                     break;
                 case 'lion':
                     appleCount = 10;
-                    logText = "🦁 Lion → +10 Apples";
-                    color = "#ffd700";
+                    logText = "🦁 Lion → +10 Äpfel";
+                    color = "#ffa502";
                     break;
                 case 'universe':
                     appleCount = 25;
-                    logText = "🌌 Universe → +25 Apples";
-                    color = "#9d00ff";
+                    logText = "🌌 Universe → +25 Äpfel";
+                    color = "#9b59b6";
                     break;
             }
 
-            // Register gift & total value
             totalGiftValue += value;
             logEvent(logText, color);
 
-            // Spawn apples
             for (let i = 0; i < appleCount; i++) {
                 spawnApple();
             }
 
-            // Flash overlay banner
             showBanner(logText);
-
-            // Check milestone unlocks
             checkMilestones();
             updateUI();
         }
@@ -792,28 +796,26 @@
             if (totalGiftValue >= 100 && !milestones.chaosMode) {
                 milestones.chaosMode = true;
                 unlockedEventsList.push("💀 CHAOS MODE");
-                logEvent("💀 CHAOS MODE ACTIVATED 💀", "#ff0055");
+                logEvent("💀 CHAOS MODE ACTIVATED 💀", "#ff4757");
                 showBanner("💀 CHAOS MODE ACTIVATED 💀");
-                canvas.style.borderColor = "#ff0055";
             }
             else if (totalGiftValue >= 50 && !milestones.superMode) {
                 milestones.superMode = true;
                 unlockedEventsList.push("🔥 SUPER MODE");
-                logEvent("🔥 SUPER MODE ACTIVATED 🔥", "#ffd700");
+                logEvent("🔥 SUPER MODE ACTIVATED 🔥", "#ffa502");
                 showBanner("🔥 SUPER MODE ACTIVATED 🔥");
-                canvas.style.borderColor = "#ffd700";
             }
             else if (totalGiftValue >= 25 && !milestones.doubleSnake) {
                 milestones.doubleSnake = true;
                 unlockedEventsList.push("🐍 DOUBLE SNAKE");
-                logEvent("🐍 DOUBLE SNAKE ACTIVATED!", "#9d00ff");
+                logEvent("🐍 DOUBLE SNAKE ACTIVATED!", "#9b59b6");
                 showBanner("🐍 DOUBLE SNAKE UNLOCKED!");
                 
-                // Initialize second decorative snake
                 secondSnake = [
                     { x: gridSize - 2, y: gridSize - 2 },
                     { x: gridSize - 2, y: gridSize - 3 }
                 ];
+                renderSecondSnake = secondSnake.map(s => ({ x: s.x, y: s.y }));
             }
             else if (totalGiftValue >= 10 && !milestones.goldenApples) {
                 milestones.goldenApples = true;
@@ -824,12 +826,11 @@
             else if (totalGiftValue >= 5 && !milestones.speedBoost) {
                 milestones.speedBoost = true;
                 unlockedEventsList.push("⚡ SPEED BOOST");
-                logEvent("⚡ SPEED BOOST ACTIVATED!", "#00f3ff");
+                logEvent("⚡ SPEED BOOST ACTIVATED!", "#70a1ff");
                 showBanner("⚡ SPEED BOOST ACTIVATED!");
             }
         }
 
-        // --- UI & LOGGING ---
         function updateUI() {
             snakeLenEl.textContent = snake.length;
             appleCountEl.textContent = apples.length;
@@ -855,89 +856,189 @@
             }, 1800);
         }
 
-        // --- RENDER GAME ---
+        // --- NEW REALISTIC/CARTOON CANVAS DRAWING SYSTEM ---
+
         function draw() {
-            // Clear Background
-            ctx.fillStyle = '#030305';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Draw Dynamic Grid Lines
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
-            ctx.lineWidth = 1;
-            for (let i = 0; i < canvas.width; i += tileSize) {
-                ctx.beginPath();
-                ctx.moveTo(i, 0);
-                ctx.lineTo(i, canvas.height);
-                ctx.stroke();
-
-                ctx.beginPath();
-                ctx.moveTo(0, i);
-                ctx.lineTo(canvas.width, i);
-                ctx.stroke();
+            drawProceduralNaturalGrass();
+            drawApplesLayer();
+            
+            if (milestones.doubleSnake && renderSecondSnake.length > 0) {
+                drawSmoothOrganicSnake(renderSecondSnake, '#e84393', '#9b59b6');
             }
 
-            // Draw Main Snake
-            snake.forEach((seg, index) => {
-                const isHead = index === 0;
-                
-                if (milestones.superMode || milestones.chaosMode) {
-                    ctx.fillStyle = isHead ? '#ffffff' : '#ffd700';
-                    ctx.shadowColor = '#ffd700';
-                    ctx.shadowBlur = isHead ? 15 : 8;
-                } else {
-                    ctx.fillStyle = isHead ? '#00f3ff' : '#00ff66';
-                    ctx.shadowColor = isHead ? '#00f3ff' : '#00ff66';
-                    ctx.shadowBlur = isHead ? 10 : 4;
-                }
+            let headColor = '#52c41a';
+            let bodyColor = '#389e0d';
 
+            if (milestones.superMode || milestones.chaosMode) {
+                headColor = '#fadb14';
+                bodyColor = '#d4b106';
+            }
+
+            drawSmoothOrganicSnake(renderSnake, headColor, bodyColor);
+        }
+
+        // Procedural Grass Environment with Soft Checkerboard & Subtle Sprigs
+        function drawProceduralNaturalGrass() {
+            for (let r = 0; r < gridSize; r++) {
+                for (let c = 0; c < gridSize; c++) {
+                    ctx.fillStyle = (r + c) % 2 === 0 ? '#558b2f' : '#5c9434';
+                    ctx.fillRect(c * tileSize, r * tileSize, tileSize, tileSize);
+                }
+            }
+
+            // Scatter subtle natural grass details
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+            for (let i = 0; i < gridSize; i += 2) {
+                const gx = (i * tileSize + 10) % CANVAS_PIXEL_SIZE;
+                const gy = ((i * 3) * tileSize + 15) % CANVAS_PIXEL_SIZE;
                 ctx.beginPath();
-                ctx.roundRect(
-                    seg.x * tileSize + 1,
-                    seg.y * tileSize + 1,
-                    tileSize - 2,
-                    tileSize - 2,
-                    isHead ? 5 : 2
-                );
+                ctx.arc(gx, gy, tileSize * 0.15, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Fully Rounded Organic Snake Rendering with Dynamic Curved Joints & Facial Details
+        function drawSmoothOrganicSnake(snakeArray, headColor, bodyColor) {
+            if (snakeArray.length === 0) return;
+
+            const radius = tileSize / 2;
+
+            // 1. Draw Soft Directional Drop Shadows
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.18)';
+            snakeArray.forEach(seg => {
+                ctx.beginPath();
+                ctx.arc(seg.x * tileSize + radius, seg.y * tileSize + radius + 3, radius * 0.85, 0, Math.PI * 2);
                 ctx.fill();
             });
 
-            // Draw Second Snake (if unlocked)
-            if (milestones.doubleSnake && secondSnake.length > 0) {
-                secondSnake.forEach((seg, index) => {
-                    ctx.fillStyle = index === 0 ? '#ff007f' : '#9d00ff';
-                    ctx.shadowColor = '#ff007f';
-                    ctx.shadowBlur = 6;
-                    ctx.beginPath();
-                    ctx.roundRect(seg.x * tileSize + 1, seg.y * tileSize + 1, tileSize - 2, tileSize - 2, 3);
-                    ctx.fill();
-                });
+            // 2. Draw Connected Smooth Body Stroke
+            ctx.strokeStyle = bodyColor;
+            ctx.lineWidth = tileSize * 0.82;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            ctx.beginPath();
+            snakeArray.forEach((seg, i) => {
+                const x = seg.x * tileSize + radius;
+                const y = seg.y * tileSize + radius;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            // 3. Draw Inner Highlight on Body
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+            ctx.lineWidth = tileSize * 0.25;
+            ctx.beginPath();
+            snakeArray.forEach((seg, i) => {
+                const x = seg.x * tileSize + radius;
+                const y = seg.y * tileSize + radius - 2;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            // 4. Draw Rounded Head & Facial Features
+            const head = snakeArray[0];
+            const neck = snakeArray[1] || head;
+            const hx = head.x * tileSize + radius;
+            const hy = head.y * tileSize + radius;
+
+            ctx.fillStyle = headColor;
+            ctx.beginPath();
+            ctx.arc(hx, hy, radius * 0.9, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Direction calculation
+            const dirX = Math.sign(head.x - neck.x) || 1;
+            const dirY = Math.sign(head.y - neck.y) || 0;
+
+            let eyeOffsetX = 0;
+            let eyeOffsetY = 0;
+            let eyeGapX = radius * 0.38;
+            let eyeGapY = radius * 0.38;
+
+            if (dirX !== 0) { eyeOffsetX = dirX * radius * 0.35; eyeGapX = 0; }
+            if (dirY !== 0) { eyeOffsetY = dirY * radius * 0.35; eyeGapY = 0; }
+
+            // Animated Tongue
+            const tongueTime = (Date.now() % 600) / 600;
+            if (tongueTime > 0.5) {
+                ctx.strokeStyle = '#ff4757';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                const tx = hx + (dirX * radius * 0.9);
+                const ty = hy + (dirY * radius * 0.9);
+                ctx.moveTo(tx, ty);
+                ctx.lineTo(tx + (dirX * 8), ty + (dirY * 8));
+                ctx.stroke();
             }
 
-            // Draw Apples
+            // Eyes Background (White)
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(hx + eyeOffsetX - eyeGapY, hy + eyeOffsetY - eyeGapX, radius * 0.26, 0, Math.PI * 2);
+            ctx.arc(hx + eyeOffsetX + eyeGapY, hy + eyeOffsetY + eyeGapX, radius * 0.26, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Pupils (Dark)
+            ctx.fillStyle = '#1e272e';
+            ctx.beginPath();
+            ctx.arc(hx + eyeOffsetX - eyeGapY + (dirX * 1.5), hy + eyeOffsetY - eyeGapX + (dirY * 1.5), radius * 0.13, 0, Math.PI * 2);
+            ctx.arc(hx + eyeOffsetX + eyeGapY + (dirX * 1.5), hy + eyeOffsetY + eyeGapX + (dirY * 1.5), radius * 0.13, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Detailed Cartoon Apple Renderer
+        function drawApplesLayer() {
             apples.forEach(apple => {
-                if (milestones.goldenApples || milestones.superMode || milestones.chaosMode) {
-                    ctx.fillStyle = '#ffd700';
-                    ctx.shadowColor = '#ffd700';
-                    ctx.shadowBlur = 12;
-                } else {
-                    ctx.fillStyle = '#ff007f';
-                    ctx.shadowColor = '#ff007f';
-                    ctx.shadowBlur = 8;
-                }
+                const cx = apple.x * tileSize + tileSize / 2;
+                const cy = apple.y * tileSize + tileSize / 2;
+                const scale = apple.scale || 1;
+                const r = (tileSize * 0.38) * scale;
 
+                const isGolden = milestones.goldenApples || milestones.superMode || milestones.chaosMode;
+
+                // 1. Soft Shadow
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.22)';
                 ctx.beginPath();
-                ctx.arc(
-                    apple.x * tileSize + tileSize / 2,
-                    apple.y * tileSize + tileSize / 2,
-                    (tileSize / 2) - 2,
-                    0,
-                    Math.PI * 2
-                );
+                ctx.ellipse(cx, cy + r * 0.9, r * 0.85, r * 0.35, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 2. Base Apple Body
+                ctx.fillStyle = isGolden ? '#f1c40f' : '#e74c3c';
+                ctx.beginPath();
+                ctx.arc(cx - r * 0.28, cy, r * 0.75, 0, Math.PI * 2);
+                ctx.arc(cx + r * 0.28, cy, r * 0.75, 0, Math.PI * 2);
+                ctx.arc(cx, cy + r * 0.25, r * 0.72, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 3. Shading / 3D Gradient Emulation
+                ctx.fillStyle = isGolden ? '#d4ac0d' : '#c0392b';
+                ctx.beginPath();
+                ctx.arc(cx, cy + r * 0.3, r * 0.65, 0, Math.PI);
+                ctx.fill();
+
+                // 4. Glossy Specular Highlight
+                ctx.fillStyle = isGolden ? '#fff9c4' : '#ff7675';
+                ctx.beginPath();
+                ctx.arc(cx - r * 0.3, cy - r * 0.35, r * 0.25, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 5. Wooden Stem
+                ctx.strokeStyle = '#5d4037';
+                ctx.lineWidth = Math.max(2, tileSize * 0.08);
+                ctx.beginPath();
+                ctx.moveTo(cx, cy - r * 0.4);
+                ctx.quadraticCurveTo(cx + 2, cy - r * 1.0, cx + 5, cy - r * 1.1);
+                ctx.stroke();
+
+                // 6. Leaf
+                ctx.fillStyle = '#2ecc71';
+                ctx.beginPath();
+                ctx.ellipse(cx + r * 0.45, cy - r * 0.95, r * 0.38, r * 0.18, -Math.PI / 4, 0, Math.PI * 2);
                 ctx.fill();
             });
-
-            // Reset glow effect
-            ctx.shadowBlur = 0;
         }
 
         // --- END GAME & WIN STATES ---
@@ -968,7 +1069,7 @@
             overlayTitleEl.classList.add('win-title');
 
             endStatsEl.innerHTML = `
-                <h3 style="color:var(--neon-green); margin-bottom:10px;">THE LIVE IS OVER</h3>
+                <h3 style="color:#ffeb3b; margin-bottom:10px;">THE LIVE IS OVER</h3>
                 <strong>Finale Länge:</strong> ${snake.length}<br>
                 <strong>Score:</strong> ${score}<br>
                 <strong>Total Gifts:</strong> €${totalGiftValue.toFixed(2)}<br>
@@ -977,12 +1078,8 @@
             overlayEl.classList.add('active');
         }
 
-        // Start game on window load
+        // Start game on load
         resetGame();
     </script>
-<div style="text-align:center; margin:20px 0;">
-  <a href="terms.html">Terms of Service</a>
-  &nbsp; | &nbsp;
-  <a href="privacy.html">Privacy Policy</a>
-</div></body>
+</body>
 </html>
