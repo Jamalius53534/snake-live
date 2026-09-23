@@ -313,11 +313,123 @@
             text-decoration: underline;
             margin: 0 8px;
         }
+
+        /* --- PUBLIC WEBSITE CONTENT --- */
+        .site-header {
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .site-header h1 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            margin-bottom: 8px;
+            text-shadow: 0 3px 12px rgba(0,0,0,0.25);
+        }
+        .site-header p {
+            max-width: 760px;
+            margin: 0 auto;
+            color: rgba(255,255,255,0.88);
+            line-height: 1.6;
+        }
+        .site-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        .site-nav a {
+            color: #fff;
+            text-decoration: none;
+            background: rgba(0,0,0,0.22);
+            border: 1px solid rgba(255,255,255,0.14);
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+        }
+        .site-nav a:hover { background: rgba(255,255,255,0.16); }
+        .info-section {
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 28px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        .info-card {
+            background: rgba(0,0,0,0.20);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            backdrop-filter: blur(6px);
+        }
+        .info-card h2 { font-size: 1rem; margin-bottom: 9px; }
+        .info-card p, .info-card li {
+            color: rgba(255,255,255,0.86);
+            font-size: 0.88rem;
+            line-height: 1.65;
+        }
+        .info-card ul { padding-left: 18px; }
+        .demo-note {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.08);
+            font-size: 0.78rem;
+            line-height: 1.5;
+            color: rgba(255,255,255,0.8);
+        }
+        .legal-section {
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .legal-section a {
+            color: #fff;
+            text-decoration: underline;
+            margin: 0 10px;
+        }
+        .site-footer {
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 20px;
+            padding: 20px 0 10px;
+            text-align: center;
+            color: rgba(255,255,255,0.65);
+            font-size: 0.78rem;
+            line-height: 1.6;
+        }
+        @media (max-width: 900px) {
+            .info-grid { grid-template-columns: 1fr; }
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="container">
+
+    <header class="site-header">
+        <h1>🐍 Snake LIVE</h1>
+        <p>
+            An interactive browser-based Snake game designed for TikTok LIVE experiences.
+            Viewer interactions can be used to influence gameplay through supported events.
+        </p>
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="#game">Play Demo</a>
+            <a href="#about">About</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#features">Features</a>
+            <a href="#integration">LIVE Integration</a>
+            <a href="#legal">Legal</a>
+        </nav>
+    </header>
+
+    <div class="container" id="game">
         <!-- Main Game Section -->
         <div class="game-section">
             <!-- Floating Minimal Header UI -->
@@ -354,7 +466,8 @@
         <div class="dashboard">
             <!-- Test Controls -->
             <div class="panel">
-                <h2>Test Controls</h2>
+                <h2>Demo Controls</h2>
+                <div class="demo-note">These buttons simulate viewer events for demonstration and testing. They do not process TikTok Coins, gifts, or payments.</div>
                 <div class="gift-grid">
                     <button class="btn-gift" data-gift="rose" onclick="handleGift('rose', 0.10)">
                         <span>🌹</span> Rose
@@ -383,8 +496,81 @@
         </div>
     </div>
 
-    <footer>
-        <a href="#terms">Terms of Service</a> | <a href="#privacy">Privacy Policy</a>
+
+    <main class="info-section">
+        <div class="info-grid">
+            <section class="info-card" id="about">
+                <h2>About Snake LIVE</h2>
+                <p>
+                    Snake LIVE is an interactive web game built for live-streaming experiences.
+                    An AI-controlled snake navigates the playfield, searches for apples, grows as
+                    it collects them, and can react to event triggers during a session.
+                </p>
+            </section>
+
+            <section class="info-card" id="how-it-works">
+                <h2>How It Works</h2>
+                <p>
+                    The snake uses pathfinding to locate reachable apples. When an event is triggered,
+                    the game can spawn additional apples or activate gameplay milestones. If the snake
+                    cannot receive enough food before its hunger timer expires, the session ends.
+                </p>
+            </section>
+
+            <section class="info-card" id="features">
+                <h2>Features</h2>
+                <ul>
+                    <li>AI-controlled snake movement</li>
+                    <li>Automatic apple pathfinding</li>
+                    <li>Real-time hunger and score system</li>
+                    <li>Progressive playfield expansion</li>
+                    <li>Special gameplay milestones</li>
+                    <li>Live event log for visible interactions</li>
+                </ul>
+            </section>
+
+            <section class="info-card" id="integration">
+                <h2>TikTok LIVE Integration</h2>
+                <p>
+                    The website is designed to connect supported TikTok LIVE viewer events with
+                    gameplay actions. In the current public demo, the buttons above simulate those
+                    events so the game can be tested without a live connection.
+                </p>
+                <div class="demo-note">
+                    TikTok gifts, Coins, and creator rewards are handled by TikTok. This website
+                    does not process or store TikTok payments.
+                </div>
+            </section>
+
+            <section class="info-card">
+                <h2>Gameplay Events</h2>
+                <p>
+                    Demo events can add apples and contribute toward gameplay milestones. Higher
+                    simulated event values can unlock features such as Speed Boost, Golden Apples,
+                    Double Snake, Super Mode, and Chaos Mode.
+                </p>
+            </section>
+
+            <section class="info-card">
+                <h2>About This Demo</h2>
+                <p>
+                    This public page provides the game, its interactive demonstration controls,
+                    and information about how the experience is intended to work. It is designed
+                    to be understandable without requiring a TikTok account to view or test it.
+                </p>
+            </section>
+        </div>
+
+        <section class="legal-section" id="legal">
+            <h2 style="font-size:1rem; margin-bottom:10px;">Legal</h2>
+            <a href="terms.html">Terms of Service</a>
+            <a href="privacy.html">Privacy Policy</a>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        Snake LIVE · Interactive browser game for live-streaming experiences<br>
+        The public demo does not process TikTok payments or creator rewards.
     </footer>
 
     <script>
@@ -1097,14 +1283,5 @@
         // Start game on load
         resetGame();
     </script>
-<!-- Legal Links -->
-<div style="text-align:center; padding:20px; font-family:Arial,sans-serif;">
-    <a href="terms.html" style="margin:0 10px; color:inherit; text-decoration:underline;">
-        Terms of Service
-    </a>
-    |
-    <a href="privacy.html" style="margin:0 10px; color:inherit; text-decoration:underline;">
-        Privacy Policy
-    </a>
-</div></body>
+</body>
 </html>
